@@ -8,6 +8,7 @@ import {
 import './index.scss'
 import { useSelector } from 'react-redux'
 import { defaultState } from '../../interface';
+import  UserComponent from './UserComponent';
 const { Header } = Layout;
 
 interface HeaderInterface {
@@ -19,19 +20,22 @@ const HeaderComponent: FC<HeaderInterface>= ({collapsed, toggle}) => {
 
     return (
         <Header className='header'>
-            {/* 折叠图标 */}
-            {
-                React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                    className: 'trigger',
-                    onClick: toggle,
-                })
-            }
-            {/* 面包屑 */}
-            <Breadcrumb>
+            <div className='menuBread'>
+                {/* 折叠图标 */}
                 {
-                    bread.map((item: any, index: number) => <Breadcrumb.Item key={index.toString()}><a href={item.href}>{item.name}</a></Breadcrumb.Item>)
+                    React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                        className: 'trigger',
+                        onClick: toggle,
+                    })
                 }
-            </Breadcrumb>
+                {/* 面包屑 */}
+                <Breadcrumb>
+                    {
+                        bread.map((item: any, index: number) => <Breadcrumb.Item key={index.toString()}><a href={item.href}>{item.name}</a></Breadcrumb.Item>)
+                    }
+                </Breadcrumb>
+            </div>
+            <UserComponent />
         </Header>
     )
 }

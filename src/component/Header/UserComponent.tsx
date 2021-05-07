@@ -2,13 +2,13 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 15:19:54 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-06 15:33:11
+ * @Last Modified time: 2021-05-07 15:46:26
  */
 import React from 'react';
 import {
     BellOutlined
 } from '@ant-design/icons'
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, Badge, Avatar } from 'antd'
 import { useHistory } from 'react-router-dom'
 
 import './index.scss'
@@ -23,8 +23,10 @@ const User = () => {
         switch(key){
             case 'center':
                 history.push('/center');
+                break;
             case 'logout':
                 history.push('/login')
+                break;
         }
     }
     
@@ -40,9 +42,15 @@ const User = () => {
     )
     return (
         <div className='user'>
-            <BellOutlined />
-            <Dropdown overlay={menu} placement="bottomLeft" arrow>
-                <span>管理员</span><img></img>
+            <div className='userBadge'> 
+                <Badge count={5}>
+                    <BellOutlined />
+                </Badge>
+            </div>
+            <Dropdown overlay={menu} placement="bottomCenter" arrow>
+                <div className='userInfo'>
+                    <span>管理员</span><Avatar />
+                </div>
             </Dropdown>
         </div>
     )

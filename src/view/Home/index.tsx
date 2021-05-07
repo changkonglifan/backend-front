@@ -2,9 +2,9 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 10:53:47 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-06 14:26:23
+ * @Last Modified time: 2021-05-07 09:51:05
  */
-import React from 'react'
+import React, { useState } from 'react'
 import { Layout } from 'antd'
 import './index.scss'
 import Header from '../../component/Header'
@@ -14,23 +14,18 @@ import {  Route } from 'react-router-dom';
 import Report from '../Report'
 
 const {  Content } = Layout;
-class Home extends React.Component {
+const Home = () => {
+  const [collapsed, setCollapsed] = useState(false);
   
-  state = { 
-    collapsed: false
+  const toggle = () => {
+    setCollapsed(!collapsed)
   }
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed
-    })
-  }
-  render(){
     return (
       <div className="home">
         <Layout className="home-layout">
-         <SiderComponent collapsed={this.state.collapsed}/>
+         <SiderComponent collapsed={collapsed}/>
           <Layout>
-            <Header collapsed={this.state.collapsed} toggle={this.toggle}></Header>
+            <Header collapsed={collapsed} toggle={toggle}></Header>
             <Content>
               <Route path='/' component={Report}></Route>
             </Content>
@@ -38,7 +33,6 @@ class Home extends React.Component {
         </Layout>
       </div>
     )
-  }
 }
 
 export default Home;

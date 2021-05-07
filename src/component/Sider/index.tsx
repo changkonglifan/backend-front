@@ -9,23 +9,20 @@ const { Sider } = Layout;
 interface SiderInterface {
     collapsed: boolean;
 }
-class SiderComponent extends React.Component<SiderInterface> {
-
-    render (){
+const SiderComponent = (props: SiderInterface) => {
         return (
-            <Sider trigger={null} collapsible collapsed={this.props.collapsed}>
+            <Sider trigger={null} collapsible collapsed={props.collapsed}>
                 <div className="logo">
                     <img src={logo}></img>
                     {
-                        !this.props.collapsed ? 
+                        !props.collapsed ? 
                         <h1>ADMIN</h1> : null
                     }
                 </div>
                 <Menu>
-                    
+
                 </Menu>
             </Sider>
         )
-    }
 }
 export default SiderComponent;

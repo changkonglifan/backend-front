@@ -1,0 +1,35 @@
+.login{
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    background-image: url(../../statics/bg.svg);
+    background-repeat: no-repeat;
+    background-position: center 110px;
+    background-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .form{
+        width: 300px;
+    }
+    .code{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        .ant-input{
+            width: 210px;
+        }
+    }
+    .btn-login{
+        width: 100%;
+    }
+    .logo-info{
+        font-size: 36px;
+        font-weight: bold;
+        img{
+            background-color: #ccc;
+        }
+    }
+}
