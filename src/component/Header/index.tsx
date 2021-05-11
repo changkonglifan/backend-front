@@ -16,7 +16,7 @@ interface HeaderInterface {
     toggle: any;
 }
 const HeaderComponent: FC<HeaderInterface>= ({collapsed, toggle}) => {
-    const bread = useSelector((state: defaultState) => state.home.bread)
+    const bread = useSelector((state: defaultState) => state.home.bread);
 
     return (
         <Header className='header'>

@@ -31,7 +31,7 @@ const Login = () => {
         <div className='login'>
             <div className="form">
                 <div className='logo-info'>
-                    <img src={logo} ></img>
+                    <img src={logo} alt='admin'></img>
                     <span>ADMIN</span>
                 </div>
                 <Form
@@ -61,7 +61,7 @@ const Login = () => {
                     >
                         <div className='code'>
                             <Input  placeholder='请输入验证码'/>
-                            <img width='80' height='32'></img>
+                            <img width='80' height='32' alt='验证码'></img>
                         </div>
                     </Form.Item>
                     <Form.Item>

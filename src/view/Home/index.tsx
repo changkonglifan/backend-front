@@ -2,19 +2,17 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 10:53:47 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-07 09:51:05
+ * @Last Modified time: 2021-05-11 15:43:11
  */
 import React, { useState } from 'react'
 import { Layout } from 'antd'
 import './index.scss'
 import Header from '../../component/Header'
 import SiderComponent from '../../component/Sider';
-import {  Route } from 'react-router-dom';
-
-import Report from '../Report'
+import {  withRouter } from 'react-router-dom';
 
 const {  Content } = Layout;
-const Home = () => {
+const Home = (props: any) => {
   const [collapsed, setCollapsed] = useState(false);
   
   const toggle = () => {
@@ -27,7 +25,9 @@ const Home = () => {
           <Layout>
             <Header collapsed={collapsed} toggle={toggle}></Header>
             <Content>
-              <Route path='/' component={Report}></Route>
+              {
+                props.children
+              }
             </Content>
           </Layout>
         </Layout>
@@ -35,4 +35,4 @@ const Home = () => {
     )
 }
 
-export default Home;
+export default withRouter(Home);
