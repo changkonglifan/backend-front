@@ -2,16 +2,28 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 10:53:47 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-07 16:20:22
+ * @Last Modified time: 2021-05-14 10:40:14
  */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form, Input, message } from 'antd'
 import './index.scss'
 import logo from '../../statics/logo.png'
 import { useHistory } from 'react-router-dom'
+import { baseURL } from '../../utils/config'
+import { login } from '../../api/login'
+import { setLoginInfo } from '../../action/login'
+import { useDispatch } from 'react-redux'
+import { encrypt } from '../../utils'
+
 const Login = () => {
     const history =  useHistory(); 
     const [form] = Form.useForm();
+    const dispatch = useDispatch();
+    const [codeSvg, setCodeSvg] = useState("");
+    useEffect(()=>{
+        setCodeSvg(baseURL() + '/user/code')
+    }, [])
+
     /**
      * 表单输入完成
      */
@@ -19,13 +31,27 @@ const Login = () => {
 
     }
     /**
+     * 更新验证码
+     */
+    const refreshCode = ():void => {
+        setCodeSvg(baseURL() + '/user/code?v=' + new Date().getTime())
+    }
+    /**
      * 登录
      */
-    const login = ():void => {
+    const loginHandle = async ():Promise<void> => {
         const values = form.getFieldsValue(true);
-        message.success('登录成功');
-        message.success(JSON.stringify(values));
-        history.push('/index')
+        console.log('loginData', values)
+        values.password = encrypt(values.password)
+        const res = await login(values);
+        if(res.code === 0){
+            message.success('登录成功');
+            history.push('/index')
+            dispatch(setLoginInfo(res.data));
+        }else {
+            refreshCode();
+            message.error(res.message);
+        }
     }
     return (
         <div className='login'>
@@ -61,11 +87,11 @@ const Login = () => {
                     >
                         <div className='code'>
                             <Input  placeholder='请输入验证码'/>
-                            <img width='80' height='32' alt='验证码'></img>
+                            <img alt='验证码' src={codeSvg} onClick={refreshCode}></img>
                         </div>
                     </Form.Item>
                     <Form.Item>
-                        <Button className='btn-login' onClick={login} type="primary">登录</Button>
+                        <Button className='btn-login' onClick={loginHandle} type="primary">登录</Button>
                     </Form.Item>
                 </Form>
             </div>
