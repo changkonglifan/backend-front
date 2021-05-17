@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2020-11-24 19:02:48 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-14 10:50:03
+ * @Last Modified time: 2021-05-17 18:01:19
  * 通用方法, 包括cookies操作
  */
 import JSEncrypt from 'jsencrypt'
@@ -11,34 +11,37 @@ import JSEncrypt from 'jsencrypt'
  * @param {*} name 
  * @param {*} value 
  */
- export const setCookie = (name: string,value: string): void => {
-    var Days = 1;
-    var exp = new Date();
-    exp.setTime(exp.getTime() + Days*24*60*60*1000);
-    document.cookie = name + '=' + escape (value) + ';expires=' + exp.toUTCString();
-}
+ export function setCookie(name:string, value:string) {
+    const hours = 2;
+    const exp = new Date();
+    exp.setTime(exp.getTime() + hours * 3600 * 1000);
+    document.cookie =
+      name + '=' + encodeURIComponent(value);
+  }
+  
+
+ 
 /**
  * 读取cookies
  * @param {*} name 
  */
-export const getCookie = (name: any): string | null => {
-    var arr,reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)');
-    if(arr === document.cookie.match(reg))
-        return unescape(arr[2]);
-    else
-        return null;
+ export function getCookie(name: string):string {
+    const value = '; ' + document.cookie;
+    const parts:Array<string> = value.split('; ' + name + '=');
+    if (parts && parts.length === 2) {
+      return parts.pop().split(';').shift();
+    }
+    return '';
 }
 /**
  * 删除cookies
  * @param name 
  */
-export const delCookie = (name: string):void => {
-    var exp = new Date();
-    exp.setTime(exp.getTime() - 1);
-    var cval = getCookie(name);
-    if(cval!=null)
-        document.cookie= name + '=' + cval + ';expires=' + exp.toUTCString();
-}
+ export function delCookie($name:any) {
+    const myDate = new Date();
+    myDate.setTime(-1000); //设置时间
+    document.cookie = $name + '=\'\'; expires=' + myDate.toTimeString();
+  }
 /**
  * 清空cookies
  * @param {*} name 
@@ -49,13 +52,16 @@ export function clearCookie(name: string):void {
 /**
  * 删除所有的cookies
  */
-export const clearAllCookie = ():void => {
-    var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
-    if (keys) {
-        for (var i = keys.length; i--;)
-            document.cookie=keys[i]+'=0;expires=' + new Date( 0).toUTCString()
+ export function delAllCookie() {
+    const myDate = new Date();
+    myDate.setTime(-1000); //设置时间
+    const data = document.cookie;
+    const dataArray = data.split('; ');
+    for (let i = 0; i < dataArray.length; i++) {
+      const varName = dataArray[i].split('=');
+      document.cookie = varName[0] + '=\'\'; expires=' + myDate.toLocaleDateString();
     }
-}
+  }
 /**
  * 加密
  * @param str 

@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2020-11-20 11:19:08 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-14 09:56:20
+ * @Last Modified time: 2021-05-17 17:50:44
  * axios 请求封装
  */
 import axios from 'axios';
@@ -27,13 +27,7 @@ instance.interceptors.request.use(
       config.data = qs.stringify(config.data)
     }
     // 携带token
-    if(!config.params){
-      config.params = {
-        token : getCookie('token')
-      };
-    }else {
-      config.params.token = getCookie('token')
-    }
+   config.headers.authorization = getCookie('token')
     return config;
   }, function (error) {
     // 对请求错误做些什么

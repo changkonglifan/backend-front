@@ -23,7 +23,7 @@ const SiderComponent = (props: SiderInterface) => {
      * 菜单点击事件
      */
     const menuHandle = ({ key}: any): void => {
-        history.push('/index/' + key);
+        history.push('/' + key);
     }
     return (
         <Sider trigger={null} collapsible collapsed={props.collapsed}>

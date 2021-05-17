@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 10:53:47 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-14 10:40:14
+ * @Last Modified time: 2021-05-17 17:36:47
  */
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Input, message } from 'antd'
@@ -13,7 +13,7 @@ import { baseURL } from '../../utils/config'
 import { login } from '../../api/login'
 import { setLoginInfo } from '../../action/login'
 import { useDispatch } from 'react-redux'
-import { encrypt } from '../../utils'
+import { encrypt, setCookie } from '../../utils'
 
 const Login = () => {
     const history =  useHistory(); 
@@ -45,6 +45,9 @@ const Login = () => {
         values.password = encrypt(values.password)
         const res = await login(values);
         if(res.code === 0){
+            // 设置cookies
+            setCookie('token', res.data.token);
+            
             message.success('登录成功');
             history.push('/index')
             dispatch(setLoginInfo(res.data));

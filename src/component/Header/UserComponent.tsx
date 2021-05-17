@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 15:19:54 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-07 15:46:26
+ * @Last Modified time: 2021-05-17 17:32:15
  */
 import React from 'react';
 import {
@@ -19,8 +19,8 @@ const User = () => {
     /**
      * 下拉菜单按钮
      */
-    const menuHandle = ( key:any ):void => {
-        switch(key){
+    const menuHandle = ( e:any ):void => {
+        switch(e.key){
             case 'center':
                 history.push('/center');
                 break;
