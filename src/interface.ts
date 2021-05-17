@@ -34,3 +34,13 @@ export interface dispatchParams {
     type: string;
     params: any;
 }
+/**
+ * 用户查询条件
+ */
+export interface ISearchUserParams {
+    username: string;
+    role: string;
+    status: string;
+    page: number;
+    pageSize: number;
+}

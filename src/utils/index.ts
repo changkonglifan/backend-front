@@ -11,48 +11,46 @@ import JSEncrypt from 'jsencrypt'
  * @param {*} name 
  * @param {*} value 
  */
- export function setCookie(name:string, value:string) {
+export function setCookie(name:string, value:string) {
     const hours = 2;
     const exp = new Date();
     exp.setTime(exp.getTime() + hours * 3600 * 1000);
     document.cookie =
       name + '=' + encodeURIComponent(value);
-  }
-  
+}
 
- 
 /**
  * 读取cookies
  * @param {*} name 
  */
- export function getCookie(name: string):string {
+export function getCookie(name: string):string {
     const value = '; ' + document.cookie;
-    const parts:Array<string> = value.split('; ' + name + '=');
-    if (parts && parts.length === 2) {
+    const parts:any = value.split('; ' + name + '=');
+    if (parts!== undefined && parts.length === 2) {
       return parts.pop().split(';').shift();
     }
     return '';
 }
 /**
- * 删除cookies
+ * 删除cookies 
  * @param name 
  */
- export function delCookie($name:any) {
+export function delCookie($name:any) {
     const myDate = new Date();
     myDate.setTime(-1000); //设置时间
     document.cookie = $name + '=\'\'; expires=' + myDate.toTimeString();
-  }
+}
 /**
  * 清空cookies
  * @param {*} name 
  */
-export function clearCookie(name: string):void {     
-    setCookie(name, ""); 
+export function clearCookie(name: string):void {
+    setCookie(name, "");
 }
 /**
  * 删除所有的cookies
  */
- export function delAllCookie() {
+export function delAllCookie() {
     const myDate = new Date();
     myDate.setTime(-1000); //设置时间
     const data = document.cookie;

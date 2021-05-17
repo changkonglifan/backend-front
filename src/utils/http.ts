@@ -27,7 +27,7 @@ instance.interceptors.request.use(
       config.data = qs.stringify(config.data)
     }
     // 携带token
-   config.headers.authorization = getCookie('token')
+    config.headers.authorization = getCookie('token')
     return config;
   }, function (error) {
     // 对请求错误做些什么
