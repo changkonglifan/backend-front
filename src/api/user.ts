@@ -15,3 +15,10 @@ import { response, ISearchUserParams } from '../interface';
  * @returns 
  */
 export const getAllUsersByParams = (params: ISearchUserParams):Promise<response> => http.get('/user/getAllUsersByParams', {params: params})
+
+/**
+ * 添加用户
+ * @param params 
+ * @returns 
+ */
+export const addUser = (params: any): Promise<response> => http.post('/user/add', params)

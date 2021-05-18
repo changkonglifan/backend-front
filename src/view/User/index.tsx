@@ -2,14 +2,20 @@
  * @Author: XuYang 
  * @Date: 2021-05-17 16:25:46 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-17 17:19:43
+ * @Last Modified time: 2021-05-18 10:34:37
  */
 import React, { useState, useEffect } from 'react'
-import { Form, Input, message, Select, Button, Table, Pagination, Avatar } from 'antd'
+import { Form, Input, message, Select, Button, Table, Pagination, Avatar, Tag, Divider } from 'antd'
 import './index.scss'
 import {  withRouter } from 'react-router-dom';
 import { getAllRoles } from '../../api/role';
 import { getAllUsersByParams } from '../../api/user'
+import {
+    DeleteOutlined,
+    PlusOutlined,
+    SearchOutlined
+} from  '@ant-design/icons'
+import AddModal from './AddModal';
 interface IRole {
     id: string,
     name: string,
@@ -24,6 +30,9 @@ const User = (props: any) => {
         total: 0,
         list: []
     }); // 用户列表
+    const [showAddModal, setShowAddModal] = useState(false);//新增/修改 弹窗
+    const [isAdd, setIsAdd] = useState(false); //新增
+    const [currentUser, setCurrentUser] = useState({}); //当前用户
     useEffect(() => {
         getRoleList();
         getAllUser(1, 10);
@@ -71,8 +80,38 @@ const User = (props: any) => {
     /**
      * 查询按钮
      */
-    const searchHandle = () => {
+    const searchHandle = ():void => {
         getAllUser(1, 10);
+    }
+
+    /**
+     * 删除
+     */
+    const del = (record:  any):void => {
+        console.log(record)
+    }
+    /**
+     * 新增用户
+     */
+    const addUserHandle = ():void => {
+        setShowAddModal(true);
+        setIsAdd(true);
+    }
+    /**
+     * 修改用户
+     * @param user 
+     */
+    const modifyUserHandle = (user: any): void => {
+        setIsAdd(false);
+        setShowAddModal(true);
+        setCurrentUser(user);
+    }
+    /**
+     * 隐藏弹窗
+     */
+    const hideModal = (): void => {
+        setShowAddModal(false);
+        setCurrentUser({});
     }
     const columns = [
         {
@@ -116,6 +155,13 @@ const User = (props: any) => {
                 { text: '禁用', value: '0' },
                 { text: '启用', value: '1' },
             ],
+            render:(text: any) => {
+                if(text + '' === '0'){
+                    return <Tag color="#f50">禁用</Tag>
+                }else {
+                    return <Tag color="#87d068">启用</Tag>
+                }
+            }
         },
         {
             title: '备注',
@@ -132,6 +178,18 @@ const User = (props: any) => {
             dataIndex: 'updateTime',
             key: 'updateTime',
         },
+        {
+            title:'操作',
+            dataIndex: 'action',
+            key: 'action',
+            render: (text:any, record: any) => {
+                return  <div>
+                            <a onClick={()=> modifyUserHandle(record)}>修改</a>
+                            <Divider type="vertical" />
+                            <a onClick={()=> del(record)}>删除</a>
+                        </div>
+            }
+        }
     ]
     return (
         <div className="home-content">
@@ -150,21 +208,31 @@ const User = (props: any) => {
                     >
                         <Select style={{width:120}} placeholder='请选择角色'>
                             {
-                                roleList.map((item: IRole) => <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
+                                roleList.map((item: IRole) => <Select.Option key={item.id + ''} value={item.id}>{item.name}</Select.Option>)
                             }
                         </Select>
                     </Form.Item>
                     <Form.Item>
-                        <Button type='primary' onClick={searchHandle}>查询</Button>
+                        <Button type='primary' icon={<SearchOutlined />} onClick={searchHandle}>查询</Button>
                     </Form.Item>
                 </Form>
+                <div className='user-controller'>
+                    <Button danger icon={<DeleteOutlined />}>批量删除</Button>
+                    <Button type='primary' icon={<PlusOutlined />} onClick={addUserHandle}>新增用户</Button>
+                </div>
                 <div>
-                    <Table columns={columns} dataSource={userList.list} pagination={false}></Table>
+                    <Table columns={columns} dataSource={userList.list} pagination={false} rowKey='id'></Table>
                     <div className='pageSize'>
                         <Pagination size='small' total={userList.total} current={userList.page} pageSize={userList.pageSize} onChange={pageChange} onShowSizeChange={pageChange}></Pagination>
                     </div>
                 </div>
             </div>
+            <AddModal
+                isAdd={isAdd}
+                user={currentUser}
+                visible={showAddModal}
+                hideModal={hideModal}
+            ></AddModal>
         </div>
     )
 }

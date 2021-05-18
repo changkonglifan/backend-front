@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2021-05-06 10:53:47 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-17 17:36:47
+ * @Last Modified time: 2021-05-18 09:54:53
  */
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Input, message } from 'antd'
@@ -51,6 +51,8 @@ const Login = () => {
             message.success('登录成功');
             history.push('/index')
             dispatch(setLoginInfo(res.data));
+
+            localStorage.setItem('userInfo', JSON.stringify(res.data));
         }else {
             refreshCode();
             message.error(res.message);

@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2020-11-20 11:19:08 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-17 17:50:44
+ * @Last Modified time: 2021-05-18 12:09:23
  * axios 请求封装
  */
 import axios from 'axios';
@@ -37,7 +37,7 @@ instance.interceptors.request.use(
 // 添加响应拦截器
 instance.interceptors.response.use(function (response) {
     // 对响应数据做点什么
-    if(response.data.code + '' === '-101'){
+    if(response.data.code + '' === '-101' || response.data.code + '' === '1001'){
       // 登录已失效
       window.location.href = '/login';
     }

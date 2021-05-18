@@ -2,7 +2,7 @@
  * @Author: XuYang 
  * @Date: 2020-11-24 19:02:48 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-17 18:01:19
+ * @Last Modified time: 2021-05-18 10:18:59
  * 通用方法, 包括cookies操作
  */
 import JSEncrypt from 'jsencrypt'
@@ -74,4 +74,14 @@ LRadjazfVbhssL8T/gifWcXeWfg9QJoqn9J4uBM/2Yz+A94T1VdrJEkCAwEAAQ==
     let js = new JSEncrypt({});
     js.setPublicKey(pubkey);
     return js.encrypt(str).toString();
+}
+/**
+ * 
+ * @param img 
+ * @param callback 
+ */
+export const getBase64 = (img:any, callback: any) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
 }

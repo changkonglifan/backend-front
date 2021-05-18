@@ -8,6 +8,12 @@
         padding: 24px;
         margin: 0;
     }
+    .user-controller{
+        padding-bottom: 24px;
+        > button {
+            margin-right: 24px;
+        }
+    }
 }
 .search-form{
     padding-bottom:24px;
