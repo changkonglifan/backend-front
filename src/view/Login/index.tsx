@@ -40,23 +40,27 @@ const Login = () => {
      * 登录
      */
     const loginHandle = async ():Promise<void> => {
-        const values = form.getFieldsValue(true);
-        console.log('loginData', values)
-        values.password = encrypt(values.password)
-        const res = await login(values);
-        if(res.code === 0){
-            // 设置cookies
-            setCookie('token', res.data.token);
-            
-            message.success('登录成功');
-            history.push('/index')
-            dispatch(setLoginInfo(res.data));
-
-            localStorage.setItem('userInfo', JSON.stringify(res.data));
-        }else {
-            refreshCode();
-            message.error(res.message);
-        }
+        form.validateFields().then(async (values: any): Promise<void> =>{
+            const params = { ... values}
+            console.log('loginData', params)
+            params.password = encrypt(params.password)
+            const res = await login(params);
+            if(res.code === 0){
+                // 设置cookies
+                setCookie('token', res.data.token);
+                
+                message.success('登录成功');
+                history.push('/index')
+                dispatch(setLoginInfo(res.data));
+    
+                localStorage.setItem('userInfo', JSON.stringify(res.data));
+            }else {
+                refreshCode();
+                message.error(res.message);
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
     }
     return (
         <div className='login'>

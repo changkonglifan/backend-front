@@ -2,11 +2,11 @@
  * @Author: XuYang 
  * @Date: 2021-05-18 10:02:39 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-18 12:25:01
+ * @Last Modified time: 2021-05-19 10:10:36
  */
 
-import React, { useState, useEffect } from 'react';
-import { Modal, Form, Upload, message, Input, Switch } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Form, Upload, message, Input } from 'antd';
 import { baseURL } from '../../utils/config';
 import { getBase64, getCookie } from '../../utils';
 import {
@@ -14,8 +14,10 @@ import {
     PlusOutlined
 } from '@ant-design/icons'
 import {
-    addUser
+    addUser,
+    editUser
 } from '../../api/user'
+import { RuleObject } from 'antd/lib/form';
 
 interface IAddModal {
     isAdd: boolean;
@@ -27,7 +29,8 @@ const AddModal = (props: IAddModal) => {
     const [form]  = Form.useForm();
     const [headLoading, setHeadLoading] = useState(false);
     const [imgUrl, setImgUrl] = useState('');
-    const userInfo = JSON.parse(localStorage.getItem('userInfo')|| '')
+    const [headImgUrl, setHeadImgUrl] = useState('');// 头像上传路径
+    const userInfo = JSON.parse(localStorage.getItem('userInfo')|| '');
     /**
      * 上传前
      */
@@ -55,7 +58,9 @@ const AddModal = (props: IAddModal) => {
             getBase64(info.file.originFileObj, (imageUrl: string) =>{
                 setHeadLoading(false);
                 setImgUrl(imageUrl);
+                setHeadImgUrl(info.file.response.url);
             });
+            message.success('上传成功');
         }
     }
     /**
@@ -65,7 +70,7 @@ const AddModal = (props: IAddModal) => {
         if(props.isAdd){
             addUserHandle();
         }else {
-            editUser();
+            editUserHandle();
         }
     }
     /**
@@ -73,10 +78,13 @@ const AddModal = (props: IAddModal) => {
      */
     const addUserHandle = () => {
         form.validateFields().then(async (values: any): Promise<void> =>{
+            values.headImg = headImgUrl;
             const res = await addUser(values)
             if(res.code === 0){
                 message.success('新增成功');
-                props.hideModal();
+                props.hideModal(true);
+            }else{
+                message.error(res.message)
             }
         }).catch((err) => {
 
@@ -85,8 +93,20 @@ const AddModal = (props: IAddModal) => {
     /**
      * 修改用户
      */
-    const editUser = () => {
+    const editUserHandle = () => {
+        form.validateFields().then(async (values: any): Promise<void> =>{
+            values.headImg = headImgUrl;
+            values.id = props.user.id;
+            const res = await editUser(values)
+            if(res.code === 0){
+                message.success('修改成功');
+                props.hideModal(true);
+            }else{
+                message.error(res.message)
+            }
+        }).catch((err) => {
 
+        })
     }
     const uploadButton = (
         <div>
@@ -121,7 +141,7 @@ const AddModal = (props: IAddModal) => {
                         action={`${baseURL()}/user/headImg`}
                         headers={
                             {
-                                authorization: getCookie('token')
+                                authorization: getCookie('token'),
                             }
                         }
                         data={
@@ -133,7 +153,7 @@ const AddModal = (props: IAddModal) => {
                         onChange={handleChange}
                     >
                         {
-                            imgUrl !== '' ? <img src={imgUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton
+                            (imgUrl || props.user.headImg !== '') ? <img src={ imgUrl|| baseURL() + props.user.headImg } alt="avatar" style={{ width: '100%' }} /> : uploadButton
                         }
                     </Upload>
                 </Form.Item>
@@ -164,7 +184,20 @@ const AddModal = (props: IAddModal) => {
                     label='手机'
                     name='phone'
                     initialValue={props.user.phone}
-                    rules={[{ required: true, message: '请输入手机号!' }]}
+                    rules={
+                        [
+                            { required: true, message: '请输入手机号!' },
+                            {
+                                validator: (rule: RuleObject, value:any, callback:any) => {
+                                    if(!(/^1[345678]\d{9}$/.test(value))){
+                                        callback('手机号码格式不正确!')
+                                    }else {
+                                        callback();
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 >
                     <Input placeholder='请输入手机号'></Input>
                 </Form.Item>
@@ -174,13 +207,6 @@ const AddModal = (props: IAddModal) => {
                     initialValue={props.user.email}
                 >
                     <Input placeholder='请输入邮箱'></Input>
-                </Form.Item>
-                <Form.Item
-                    label='禁用'
-                    name='status'
-                    initialValue={props.user.status}
-                >
-                    <Switch />
                 </Form.Item>
                 <Form.Item
                     label='备注'

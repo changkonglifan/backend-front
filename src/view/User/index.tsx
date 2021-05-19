@@ -2,14 +2,14 @@
  * @Author: XuYang 
  * @Date: 2021-05-17 16:25:46 
  * @Last Modified by: XuYang
- * @Last Modified time: 2021-05-18 10:34:37
+ * @Last Modified time: 2021-05-19 10:08:11
  */
 import React, { useState, useEffect } from 'react'
-import { Form, Input, message, Select, Button, Table, Pagination, Avatar, Tag, Divider } from 'antd'
+import { Form, Input, message, Select, Button, Table, Pagination, Avatar, Tag, Divider, Popover, Popconfirm } from 'antd'
 import './index.scss'
 import {  withRouter } from 'react-router-dom';
 import { getAllRoles } from '../../api/role';
-import { getAllUsersByParams } from '../../api/user'
+import { getAllUsersByParams, deleteUser } from '../../api/user'
 import {
     DeleteOutlined,
     PlusOutlined,
@@ -87,8 +87,14 @@ const User = (props: any) => {
     /**
      * 删除
      */
-    const del = (record:  any):void => {
-        console.log(record)
+    const del = async (record:  any):Promise<void> => {
+        const res = await deleteUser({id: record.id})
+        if(res.code === 0){
+            message.success('删除成功');
+            getAllUser(userList.page, userList.pageSize)
+        }else{
+            message.error(res.message)
+        }
     }
     /**
      * 新增用户
@@ -109,7 +115,10 @@ const User = (props: any) => {
     /**
      * 隐藏弹窗
      */
-    const hideModal = (): void => {
+    const hideModal = (flag: boolean | null): void => {
+        if(flag){
+            getAllUser(1, 10);
+        }
         setShowAddModal(false);
         setCurrentUser({});
     }
@@ -186,7 +195,9 @@ const User = (props: any) => {
                 return  <div>
                             <a onClick={()=> modifyUserHandle(record)}>修改</a>
                             <Divider type="vertical" />
-                            <a onClick={()=> del(record)}>删除</a>
+                            <Popconfirm title="确定删除?？" okText="确定" cancelText="取消" onConfirm={()=>del(record)}>
+                                <a style={{color: 'red'}}>删除</a>
+                            </Popconfirm>
                         </div>
             }
         }
@@ -227,12 +238,14 @@ const User = (props: any) => {
                     </div>
                 </div>
             </div>
-            <AddModal
-                isAdd={isAdd}
-                user={currentUser}
-                visible={showAddModal}
-                hideModal={hideModal}
-            ></AddModal>
+            {
+                showAddModal && <AddModal
+                    isAdd={isAdd}
+                    user={currentUser}
+                    visible={showAddModal}
+                    hideModal={hideModal}
+                ></AddModal>
+            }
         </div>
     )
 }
