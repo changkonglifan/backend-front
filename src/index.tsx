@@ -10,6 +10,9 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/lib/locale/zh_CN';
+
 const logger = createLogger({
 });
 const store = createStore(
@@ -23,7 +26,9 @@ const store = createStore(
 ReactDOM.render(
   <Provider store={store}>
     {/* <React.StrictMode> */}
-      <App />
+      <ConfigProvider locale={zhCN}>
+        <App />
+      </ConfigProvider>
     {/* </React.StrictMode> */}
   </Provider>,
   document.getElementById('root')

@@ -27,6 +27,7 @@ const App: FC = () => (
                 <Route path='/home' exact component={Report}></Route>
                 <Route path='/user' exact component={User}></Route>
                 <Route path='*' component={Page404}></Route>
+                <Redirect to='/home'></Redirect>
               </Switch>
             </Home>
         </Route>

@@ -5,13 +5,14 @@
  * @Last Modified time: 2021-05-19 10:08:11
  */
 import React, { useState, useEffect } from 'react'
-import { Form, Input, message, Select, Button, Table, Pagination, Avatar, Tag, Divider, Popover, Popconfirm } from 'antd'
+import { Form, Input, message, Select, Button, Table, Pagination, Avatar, Divider, Popconfirm, Switch, Modal } from 'antd'
 import './index.scss'
 import {  withRouter } from 'react-router-dom';
 import { getAllRoles } from '../../api/role';
-import { getAllUsersByParams, deleteUser } from '../../api/user'
+import { getAllUsersByParams, deleteUser, enableUser } from '../../api/user'
 import {
-    DeleteOutlined,
+    // DeleteOutlined,
+    ExclamationCircleOutlined,
     PlusOutlined,
     SearchOutlined
 } from  '@ant-design/icons'
@@ -33,10 +34,14 @@ const User = (props: any) => {
     const [showAddModal, setShowAddModal] = useState(false);//新增/修改 弹窗
     const [isAdd, setIsAdd] = useState(false); //新增
     const [currentUser, setCurrentUser] = useState({}); //当前用户
+    const [filterStatus, setFilterStatus] = useState([]);
     useEffect(() => {
         getRoleList();
         getAllUser(1, 10);
     }, [])
+    useEffect(() => {
+        getAllUser(userList.page, userList.pageSize);
+    }, [filterStatus])
     /**
      * 获取角色列表
      */
@@ -56,6 +61,7 @@ const User = (props: any) => {
         const values = form.getFieldsValue();
         values.page = userList.page;
         values.pageSize = userList.pageSize;
+        values.status = filterStatus.length === 1 ? filterStatus[0] : undefined;
         const res = await getAllUsersByParams(values);
         if(res.code === 0){
             setUserList(res.data);
@@ -97,6 +103,38 @@ const User = (props: any) => {
         }
     }
     /**
+     * 停用/ 启用用户
+     * @param id 
+     * @param type 
+     */
+    const enableUserHandle = (record: any, type: string): void => {
+        Modal.confirm({
+            title: `确定${ type + '' === '1' ? '停用' : '启用'}员工${record.name}?`,
+            icon: <ExclamationCircleOutlined />,
+            okText: '确定',
+            cancelText: '取消',
+            onOk(){
+                enableUserOk(record.id, type);
+            }
+        })
+        
+    }
+    /**
+     * 停用/ 启用 操作数据
+     * @param id 
+     * @param type 
+     */
+    const enableUserOk = async (id: string, type: string): Promise<void> => {
+        const typeChange =(type + '' === '0') ? '1' : '0';
+        const res = await enableUser({id: id, type: typeChange});
+        if(res.code === 0){
+            message.success('停用成功');
+            getAllUser(userList.page, userList.pageSize)
+        }else{
+            message.error(res.message)
+        }
+    }
+    /**
      * 新增用户
      */
     const addUserHandle = ():void => {
@@ -121,6 +159,19 @@ const User = (props: any) => {
         }
         setShowAddModal(false);
         setCurrentUser({});
+    }
+    /**
+     * 表哥变化
+     * @param pagination 
+     * @param filters 
+     * @param sorter 
+     */
+    const tableChangeHandle = (pagination: any, filters: any, sorter: any) => {
+        if(filters.status.length > 0){
+            setFilterStatus(filters.status)
+        }else {
+            setFilterStatus([])
+        }
     }
     const columns = [
         {
@@ -164,12 +215,8 @@ const User = (props: any) => {
                 { text: '禁用', value: '0' },
                 { text: '启用', value: '1' },
             ],
-            render:(text: any) => {
-                if(text + '' === '0'){
-                    return <Tag color="#f50">禁用</Tag>
-                }else {
-                    return <Tag color="#87d068">启用</Tag>
-                }
+            render:(text: any, record: any) => {
+                return <Switch checked={text+'' === '1'} onChange={()=> enableUserHandle(record, text)}/>
             }
         },
         {
@@ -228,11 +275,11 @@ const User = (props: any) => {
                     </Form.Item>
                 </Form>
                 <div className='user-controller'>
-                    <Button danger icon={<DeleteOutlined />}>批量删除</Button>
+                    {/* <Button danger icon={<DeleteOutlined />}>批量删除</Button> */}
                     <Button type='primary' icon={<PlusOutlined />} onClick={addUserHandle}>新增用户</Button>
                 </div>
                 <div>
-                    <Table columns={columns} dataSource={userList.list} pagination={false} rowKey='id'></Table>
+                    <Table columns={columns} dataSource={userList.list} onChange={tableChangeHandle} pagination={false} rowKey='id'></Table>
                     <div className='pageSize'>
                         <Pagination size='small' total={userList.total} current={userList.page} pageSize={userList.pageSize} onChange={pageChange} onShowSizeChange={pageChange}></Pagination>
                     </div>

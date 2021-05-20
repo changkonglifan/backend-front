@@ -40,9 +40,8 @@ const Login = () => {
      * 登录
      */
     const loginHandle = async ():Promise<void> => {
-        form.validateFields().then(async (values: any): Promise<void> =>{
-            const params = { ... values}
-            console.log('loginData', params)
+        form.validateFields().then(async (values: any): Promise<void> => {
+            const params = { ...values };
             params.password = encrypt(params.password)
             const res = await login(params);
             if(res.code === 0){
@@ -95,7 +94,7 @@ const Login = () => {
                         rules={[{ required: true, message: '请输入验证码!' }]}
                     >
                         <div className='code'>
-                            <Input  placeholder='请输入验证码'/>
+                            <Input  placeholder='请输入验证码' onPressEnter={loginHandle}/>
                             <img alt='验证码' src={codeSvg} onClick={refreshCode}></img>
                         </div>
                     </Form.Item>
