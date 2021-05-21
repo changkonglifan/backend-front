@@ -12,7 +12,7 @@ import Login from './view/Login';
 import Page404 from './view/404';
 import Report from './view/Report';
 import User from './view/User';
-
+import Role from './view/Role';
 
 const App: FC = () => (
     <BrowserRouter>
@@ -26,6 +26,7 @@ const App: FC = () => (
               <Switch>
                 <Route path='/home' exact component={Report}></Route>
                 <Route path='/user' exact component={User}></Route>
+                <Route path='/role' exact component={Role}></Route>
                 <Route path='*' component={Page404}></Route>
                 <Redirect to='/home'></Redirect>
               </Switch>

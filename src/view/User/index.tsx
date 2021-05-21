@@ -34,14 +34,18 @@ const User = (props: any) => {
     const [showAddModal, setShowAddModal] = useState(false);//新增/修改 弹窗
     const [isAdd, setIsAdd] = useState(false); //新增
     const [currentUser, setCurrentUser] = useState({}); //当前用户
-    const [filterStatus, setFilterStatus] = useState([]);
+    const [filterStatus, setFilterStatus] = useState([]);// 筛选
+    const [sorter, setSorter] = useState({
+        field: '',
+        order: ''
+    }); // 排序
     useEffect(() => {
         getRoleList();
         getAllUser(1, 10);
     }, [])
     useEffect(() => {
         getAllUser(userList.page, userList.pageSize);
-    }, [filterStatus])
+    }, [filterStatus, sorter])
     /**
      * 获取角色列表
      */
@@ -62,6 +66,10 @@ const User = (props: any) => {
         values.page = userList.page;
         values.pageSize = userList.pageSize;
         values.status = filterStatus.length === 1 ? filterStatus[0] : undefined;
+        if(sorter.field !== ''){
+            values.sorterKey = sorter.field;
+            values.sorterType = sorter.order;
+        }
         const res = await getAllUsersByParams(values);
         if(res.code === 0){
             setUserList(res.data);
@@ -161,16 +169,26 @@ const User = (props: any) => {
         setCurrentUser({});
     }
     /**
-     * 表哥变化
+     * 表格变化
      * @param pagination 
      * @param filters 
      * @param sorter 
      */
     const tableChangeHandle = (pagination: any, filters: any, sorter: any) => {
-        if(filters.status.length > 0){
+        // 筛选
+        if(filters.status && filters.status.length > 0){
             setFilterStatus(filters.status)
         }else {
             setFilterStatus([])
+        }
+        // 排序
+        if(sorter.order){
+            setSorter(sorter);
+        }else {
+            setSorter({
+                field: '',
+                order: ''
+            })
         }
     }
     const columns = [
@@ -228,11 +246,13 @@ const User = (props: any) => {
             title: '创建时间',
             dataIndex: 'createTime',
             key: 'createTime',
+            sorter: true
         },
         {
             title: '更新时间',
             dataIndex: 'updateTime',
             key: 'updateTime',
+            sorter: true
         },
         {
             title:'操作',

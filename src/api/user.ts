@@ -38,11 +38,16 @@ export const addUser = (params: any): Promise<response> => http.post('/user/add'
  export const deleteUser = (params: any): Promise<response> => http.post('/user/del', params)
 
 
- /**
-  * 停用/ 启用用户
-  * @param params 
-  * @returns 
-  */
-  export const enableUser = (params: any): Promise<response> => http.post('/user/enable', params)
+/**
+ * 停用/ 启用用户
+ * @param params 
+ * @returns 
+ */
+export const enableUser = (params: any): Promise<response> => http.post('/user/enable', params)
 
- 
+/**
+ * 修改用户密码
+ * @param params 
+ * @returns 
+ */
+export const changePsw = (params: any): Promise<response> => http.post('/user/changePsw', params)

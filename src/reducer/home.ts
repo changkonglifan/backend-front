@@ -18,8 +18,8 @@ const initState = {
             icon:'StarOutlined',
             children:[
                 {
-                    key:'auth',
-                    title:'权限管理',
+                    key:'role',
+                    title:'角色管理',
                     icon:'SafetyCertificateOutlined'
                 },
                 {
