@@ -8,9 +8,11 @@
 
 import http from '../utils/http';
 import { response } from '../interface';
-
+interface IRoleParams {
+    name: String | undefined;
+}
 /**
  * 获取角色列表
  * @returns 
  */
-export const getAllRoles = ():Promise<response> => http.get('/role/getAllRoles')
+export const getAllRoles = (params: IRoleParams):Promise<response> => http.get('/role/getAllRoles', {params: params})

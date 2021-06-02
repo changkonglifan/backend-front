@@ -50,7 +50,7 @@ const User = (props: any) => {
      * 获取角色列表
      */
     const getRoleList = async ():Promise<void> => {
-        const res = await getAllRoles();
+        const res = await getAllRoles({name: undefined});
         if(res.code === 0){
             setRoleList(res.data);
         }else {
